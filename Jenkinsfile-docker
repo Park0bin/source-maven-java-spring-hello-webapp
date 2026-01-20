@@ -32,8 +32,8 @@ pipeline {
   stage('ImagePush') {
    agent any
    steps {
-    withDockerRegistry(credentialsId: 'docker-hub-token', url: 'https://index.docker.io/v1') {
-     sh 'docker image push youngbin0027/tomcat:v$BUILDNUMBER'
+    withDockerRegistry(credentialsId: 'docker-hub-token', url: 'https://index.docker.io/v1/') {
+     sh 'docker image push youngbin0027/tomcat:v$BUILD_NUMBER'
      sh 'docker image push youngbin0027/tomcat:latest'
     }
    }
