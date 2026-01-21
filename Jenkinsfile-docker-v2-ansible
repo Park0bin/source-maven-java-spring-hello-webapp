@@ -11,7 +11,10 @@ pipeline {
   }
   stage('Build') {
    agent {
-    docker { image 'maven:3-openjdk-17' }
+    docker { 
+     image 'maven:3-openjdk-17' 
+     reuseNode true // 동일 워크 스페이스 사용
+    }
    }
    steps {
     sh 'mvn clean package'
@@ -38,7 +41,10 @@ pipeline {
   }
   stage('Running Container') {
    agent {
-    docker { image 'docker:dind' }
+    docker { 
+     image 'docker:dind' 
+     reuseNode true
+    }
    }
    steps {
     ansiblePlaybook(playbook: 'playbook.yaml')
