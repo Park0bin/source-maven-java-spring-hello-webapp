@@ -6,7 +6,6 @@
     docker_container:
       name: myweb
       image: "youngbin0027/tomcat:latest"
-      docker_host: tcp://192.168.56.104:2375
       state: started
       ports:
       - "80:8080"
