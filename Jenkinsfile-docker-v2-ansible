@@ -40,12 +40,12 @@ pipeline {
    }
   }
   stage('Running Container') {
-   agent {
-    docker { 
-     image 'docker:dind' 
-     reuseNode true
-    }
-   }
+//   agent {
+//    docker { 
+//     image 'docker:dind' 
+//     reuseNode true
+//    }
+//   }
    steps {
     ansiblePlaybook(playbook: 'playbook.yaml')
    }
