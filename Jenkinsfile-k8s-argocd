@@ -23,7 +23,7 @@ pipeline {
   stage('ImageBuild & Push') {
    steps {
     container('kaniko') {
-      sh 'executor --context=dir:///home/jenkins/agent/workspace/test/ --destination=youngbin0027/k8s:v$BUILD_NUMBER --destination=youngbin0027/k8s:latest'
+      sh 'executor --context=dir://${WORKSPACE} --destination=youngbin0027/k8s:v$BUILD_NUMBER --destination=youngbin0027/k8s:latest'
     }
    }
   }
