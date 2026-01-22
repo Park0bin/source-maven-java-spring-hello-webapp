@@ -1,0 +1,57 @@
+pipeline {
+ agent {
+  kubernetes {
+    yaml readFile('pod.yaml')
+   }
+ }
+ stages {
+  stage('CheckOut') {
+   steps {
+    container('maven') {
+      git branch: 'main',
+      url: 'https://github.com/Park0bin/source-maven-java-spring-hello-webapp.git'
+    }
+   }
+  }
+  stage('Build & Test') {
+   steps {
+    container('maven') {
+      sh 'mvn clean package'
+    }
+   }
+  }
+  stage('ImageBuild & Push') {
+   steps {
+    container('kaniko') {
+      sh 'executor --context=dir:///home/jenkins/agent/workspace/test/ --destination=youngbin0027/k8s:v$BUILD_NUMBER --destination=youngbin0027/k8s:latest'
+    }
+   }
+  }
+  stage('Update k8s Manifests & Push') {
+   environment {
+    githubUser    = 'yb'
+    githubEmail   = 'youngbin0027@gmail.com'
+    githubId      = 'Park0bin'
+    githubRepo    = 'source-maven-java-spring-hello-webapp'
+    githubURL     = 'https://github.com/Park0bin/source-maven-java-spring-hello-webapp.git'
+    githubCred    = 'github-credential'
+    dockerhubId   = 'youngbin0027'
+    dockerhubRepo = 'k8s'
+   }
+   steps {
+    container('git') {
+      git branch: 'main', credentialsId: "${githubCred}", url: "${githubURL}"
+      sh "git config --global --add safe.directory ${WORKSPACE}"
+      sh "git config --global user.name ${githubUser}"
+      sh "git config --global user.email ${githubEmail}"
+      sh 'sed -i "s/image:.*/image: ${dockerhubId}\\/${dockerhubRepo}:v${BUILD_NUMBER}/g" deployment.yaml'
+      sh 'git add deployment.yaml'
+      sh 'git commit -m "Jenkins Build Number - ${BUILD_NUMBER}"'
+      withCredentials([gitUsernamePassword(credentialsId: "${githubCred}", gitToolName: 'Default')]) {
+        sh 'git push --set-upstream origin main'
+      }
+    }
+   }
+  }
+ }
+}
