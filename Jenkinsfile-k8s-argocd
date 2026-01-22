@@ -23,7 +23,7 @@ pipeline {
   stage('ImageBuild & Push') {
    steps {
     container('kaniko') {
-      sh 'executor --context=dir://${WORKSPACE} --destination=youngbin0027/k8s:v$BUILD_NUMBER --destination=youngbin0027/k8s:latest'
+      sh "executor --context=dir://${WORKSPACE} --destination=youngbin0027/k8s:v$BUILD_NUMBER --destination=youngbin0027/k8s:latest"
     }
    }
   }
@@ -32,8 +32,8 @@ pipeline {
     githubUser    = 'yb'
     githubEmail   = 'youngbin0027@gmail.com'
     githubId      = 'Park0bin'
-    githubRepo    = 'source-maven-java-spring-hello-webapp'
-    githubURL     = 'https://github.com/Park0bin/source-maven-java-spring-hello-webapp.git'
+    githubRepo    = 'argo-test'
+    githubURL     = "https://github.com/${githubId}/${githubRepo}.git"
     githubCred    = 'github-credential'
     dockerhubId   = 'youngbin0027'
     dockerhubRepo = 'k8s'
